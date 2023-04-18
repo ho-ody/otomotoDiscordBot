@@ -7,4 +7,6 @@ def test():
     url = testurl1
     response = requests.get(url)
 
-    print(response.text)
+    #print(response.text)
+    with open("response.txt", "wb") as file:
+        file.write(response.content)
