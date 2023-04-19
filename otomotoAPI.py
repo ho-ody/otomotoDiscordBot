@@ -123,7 +123,7 @@ def findNewOffers(offers, last_offer):
     if len(offers):
         last_offer[0] = offers[0]
     else:
-        last_offer[0] = Offer
+        last_offer[0] = None
 
     for o in new_offers:
         print(o.info())
