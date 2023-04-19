@@ -56,9 +56,24 @@ def extractOffersFromResponse(response: str):
         start_of_fuel = response.find('\">', end_of_capacity) + 2
         end_of_fuel = response.find('<', start_of_fuel)
         fuel = response[start_of_fuel:end_of_fuel]
-        
+        # city
+        end_of_city = response.find("<!", end_of_fuel)
+        start_of_city = response.rfind('>', end_of_fuel, end_of_city)
+        city = response[start_of_city:end_of_city]
+        # province
+        start_of_province = response.find('(<!-- -->', end_of_city) + 9
+        end_of_province = response.find('<', start_of_province)
+        province = response[start_of_province:end_of_province]
+        # photo link
+        start_of_photo = response.find('https:',end_of_province)
+        end_of_photo = response.find('/image',start_of_photo) + 6
+        photo = response[start_of_photo:end_of_photo]
+        # price
+        end_of_price = response.find("PLN", end_of_fuel) + 3
+        start_of_price = response.rfind('>', end_of_photo, end_of_price)
+        price = response[start_of_price:end_of_price]
         # add to list
-        offers.append(Offer(link, name, description, year, capacity, fuel))
+        offers.append(Offer(link, name, description, year, capacity, fuel, city, province, photo, price))
 
     for o in offers:
         print(o.info())
