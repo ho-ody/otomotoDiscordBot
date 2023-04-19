@@ -6,7 +6,7 @@ import re
 
 from Offer import Offer
 
-last_offer = None
+# last_offer = None
 
 def test():
     testurl1 = 'https://www.otomoto.pl/osobowe/audi/a3/rzeszow?search%5Bfilter_enum_fuel_type%5D=diesel&search%5Bdist%5D=200&search%5Bfilter_float_mileage%3Ato%5D=200000&search%5Bfilter_float_price%3Afrom%5D=15000&search%5Bfilter_float_price%3Ato%5D=20000&search%5Border%5D=created_at_first%3Adesc&search%5Badvanced_search_expanded%5D=true'
@@ -108,26 +108,26 @@ def extractOffersFromResponse(response: str):
     #    print(o.info())
     return offers
 
-def findNewOffers(offers):
+def findNewOffers(offers, last_offer):
     """
     :type offers: Offer[]
     """
     new_offers = []
-    global last_offer
     for o in offers:
-        if last_offer and o == last_offer:
+        if last_offer[0] and o == last_offer[0]:
             break
         if not checkIfDateShouldBeCount(o.date):
             break
         new_offers.append(o)
 
     if len(offers):
-        last_offer = offers[0]
+        last_offer[0] = offers[0]
     else:
-        last_offer = Offer
+        last_offer[0] = Offer
 
     for o in new_offers:
         print(o.info())
+    return len(new_offers)
 
 def checkIfDateShouldBeCount(date: str):
     date = date[len('Opublikowano '):]

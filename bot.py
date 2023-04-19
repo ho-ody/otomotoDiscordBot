@@ -29,8 +29,13 @@ async def on_ready():
 
 @tasks.loop(seconds=20)
 async def test():
+    start_time = time.time()
     channel = client.get_channel(CHANNEL_ID)
     await channel.send(datetime.now().strftime(" @: %H:%M.%S"))
+    new_offers_count = 0
+    for s in searches:
+        new_offers_count += s.checkForNewOffers()
+    print(f' @ checking for new offers took: {time.time()-start_time:.3f}s, found: {new_offers_count} new offers')
 
 
 @client.event
