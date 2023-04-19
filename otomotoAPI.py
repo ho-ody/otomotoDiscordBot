@@ -136,7 +136,6 @@ def findNewOffers(offers, last_offer, printNewOffers, searchTarget):
     return len(new_offers)
 
 def checkIfDateShouldBeCount(date: str):
-    return True
     date = date[len('Opublikowano '):]
     if not date.find('minut') != -1:
         return False
