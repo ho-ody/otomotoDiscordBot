@@ -10,7 +10,7 @@ from Offer import Offer
 
 # last_offer = None
 
-def test():
+async def test():
     testurl1 = 'https://www.otomoto.pl/osobowe/audi/a3/rzeszow?search%5Bfilter_enum_fuel_type%5D=diesel&search%5Bdist%5D=200&search%5Bfilter_float_mileage%3Ato%5D=200000&search%5Bfilter_float_price%3Afrom%5D=15000&search%5Bfilter_float_price%3Ato%5D=20000&search%5Border%5D=created_at_first%3Adesc&search%5Badvanced_search_expanded%5D=true'
     testurl2 = 'https://www.otomoto.pl/osobowe/audi/a3?search%5Border%5D=created_at_first%3Adesc&search%5Badvanced_search_expanded%5D=true'
     testurl3 = 'https://www.otomoto.pl/osobowe/audi?search%5Border%5D=created_at_first%3Adesc&search%5Badvanced_search_expanded%5D=true'
@@ -30,7 +30,7 @@ def test():
     offers = extractOffersFromResponse(response_raw)
     print(f' @ extractOffersFromResponse took: {time.time() - s1:.3f}s')
     s2 = time.time()
-    findNewOffers(offers)
+    await findNewOffers(offers)
     print(f' @ findNewOffers took: {time.time() - s2:.3f}s')
 
 def extractOffersFromResponse(response: str):
@@ -112,7 +112,7 @@ def extractOffersFromResponse(response: str):
     #    print(o.info())
     return offers
 
-def findNewOffers(offers, last_offer, printNewOffers, searchTarget):
+async def findNewOffers(offers, last_offer, printNewOffers, searchTarget):
     """
     :type offers: Offer[]
     """
@@ -132,7 +132,7 @@ def findNewOffers(offers, last_offer, printNewOffers, searchTarget):
     if printNewOffers:
         for o in new_offers:
             print(o.info())
-            sendMessage(searchTarget,o)
+            await sendMessage(searchTarget, o)
     return len(new_offers)
 
 def checkIfDateShouldBeCount(date: str):
@@ -161,3 +161,4 @@ def embedOffer(offer: Offer):
 async def sendMessage(searchTarget, offer: Offer):
     channel = searchTarget.channel_id
     await channel.send(f'{searchTarget.user_id.mention}', embed=embedOffer(offer))
+

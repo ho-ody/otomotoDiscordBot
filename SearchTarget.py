@@ -15,7 +15,7 @@ class SearchTarget:
         self.last_offer = [None]
         self.first_search = True
 
-    def checkForNewOffers(self):
+    async def checkForNewOffers(self):
         response = requests.get(self.search_url)
         response_raw = html.unescape(response.text);
         # print(response.text)
@@ -26,7 +26,7 @@ class SearchTarget:
         offers = extractOffersFromResponse(response_raw)
         # print(f' @ extractOffersFromResponse took: {time.time() - s1:.3f}s')
         # s2 = time.time()
-        count_of_new_offers = findNewOffers(offers, self.last_offer, not self.first_search, self)
+        count_of_new_offers = await findNewOffers(offers, self.last_offer, not self.first_search, self)
         self.first_search = False
         return count_of_new_offers
         # print(f' @ findNewOffers took: {time.time() - s2:.3f}s')

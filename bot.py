@@ -67,9 +67,8 @@ async def test():
     ]
     new_offers_count = 0
     for s in searches:
-        new_offers_count += s.checkForNewOffers()
-        channel = client.get_channel(s.channel_id)
-        await channel.send(f' @ {random.choice(messages)}')
+        new_offers_count += await s.checkForNewOffers()
+        await s.channel_id.send(f'_...{random.choice(messages)}_')
     print(f' @ checking for new offers took: {time.time()-start_time:.3f}s, found: {new_offers_count} new offers')
 
 @client.event
@@ -89,10 +88,11 @@ async def on_message(message):
 
     if message.content.lower().startswith('$search'):
         user_id = message.author
-        channel_id = message.channel.id
+        channel_id = client.get_channel(message.channel.id)
         search_url = message.content[len('$search'):].strip()
         searches.append(SearchTarget(search_url, channel_id, user_id, datetime.now()))
-        searches[-1].checkForNewOffers()
+        start_offers_count = await searches[-1].checkForNewOffers()
+        print(f' @ {user_id} added new search: {search_url} found {start_offers_count} offers')
         await message.reply(f'ok i added search for your url, i\'ll keep you updated')
         # await message.channel.send(f'ok {user_id.mention} i added search for your url (<{search_url}>)')
         await message.edit(suppress=True)   # remove users embedded content
