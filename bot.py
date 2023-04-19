@@ -1,6 +1,7 @@
 # bot.py
 from datetime import datetime
 import os
+import time
 
 import discord
 from discord.ext import tasks
@@ -39,7 +40,8 @@ async def on_message(message):
         await message.channel.send(response)
     if message.content.lower() == '$test':
         await message.channel.send('starting...')
+        s1 = time.time()
         otomotoAPI.test()
-        await message.channel.send('...done')
+        await message.channel.send(f'...done [took: {time.time()-s1:.2f}s]')
 
 client.run(TOKEN)

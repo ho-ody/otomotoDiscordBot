@@ -2,3 +2,4 @@
 /__pychache__
 venv
 /response.txt
+/__pycache__/*.pyc
