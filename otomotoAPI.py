@@ -29,7 +29,36 @@ def extractOffersFromResponse(response: str):
     # make offer list
     offers = []
     for r in start:
-        link = response[r+9:response.find('\"',r+9)]
-        offers.append(Offer(link))
-    #print(offers)
-    print([offer.link for offer in offers])
+        # link
+        end_of_link = response.find('\"',r+9)
+        link = response[r+9:end_of_link]
+        # name
+        start_of_name = end_of_link+17
+        end_of_name = response.find('<',start_of_name)
+        name = response[start_of_name:end_of_name]
+        # description
+        start_of_description = response.find('\">',end_of_name) + 2
+        end_of_description = response.find('<', start_of_description)
+        description = response[start_of_description:end_of_description]
+        # year
+        start_of_year = response.find('\">',response.find('\">',end_of_description) + 2) + 2
+        end_of_year = response.find('<', start_of_year)
+        year = response[start_of_year:end_of_year]
+        # mileage
+        start_of_mileage = response.find('\">',end_of_year) + 2
+        end_of_mileage = response.find('<', start_of_mileage)
+        mileage = response[start_of_mileage:end_of_mileage]
+        # capacity
+        start_of_capacity = response.find('\">',end_of_mileage) + 2
+        end_of_capacity = response.find('<', start_of_capacity)
+        capacity = response[start_of_capacity:end_of_capacity]
+        # fuel
+        start_of_fuel = response.find('\">', end_of_capacity) + 2
+        end_of_fuel = response.find('<', start_of_fuel)
+        fuel = response[start_of_fuel:end_of_fuel]
+        
+        # add to list
+        offers.append(Offer(link, name, description, year, capacity, fuel))
+
+    for o in offers:
+        print(o.info())
