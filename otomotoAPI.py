@@ -1,5 +1,6 @@
 import time
 
+import discord
 import requests
 import html
 import re
@@ -138,3 +139,16 @@ def checkIfDateShouldBeCount(date: str):
     if minutes > 20:
         return False
     return True
+
+
+def embedOffer(offer: Offer):
+    embed = discord.Embed(title=offer.name, description=offer.description, color=0x00ff4c)
+    embed.set_image(url=offer.photo)
+    embed.add_field(name='price', value=offer.price, inline=True)
+    embed.add_field(name='mileage', value=offer.mileage, inline=True)
+    embed.add_field(name='year', value=offer.year, inline=True)
+    embed.add_field(name='engine', value=offer.capacity+'  '+offer.fuel, inline=True)
+    embed.add_field(name='city', value=offer.city + '  (' + offer.province + ')', inline=True)
+    embed.add_field(name='', value='', inline=True)
+    embed.add_field(name='link', value=offer.link, inline=False)
+    return embed

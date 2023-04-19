@@ -37,7 +37,6 @@ async def test():
         new_offers_count += s.checkForNewOffers()
     print(f' @ checking for new offers took: {time.time()-start_time:.3f}s, found: {new_offers_count} new offers')
 
-
 @client.event
 async def on_message(message):
     if message.author == client.user:
@@ -48,9 +47,11 @@ async def on_message(message):
         await message.channel.send(response)
     if message.content.lower() == '$test':
         await message.channel.send('starting...')
-        s1 = time.time()
-        otomotoAPI.test()
-        await message.channel.send(f'...done [took: {time.time()-s1:.2f}s]')
+        #s1 = time.time()
+        #otomotoAPI.test()
+        #await message.channel.send(f'...done [took: {time.time()-s1:.2f}s]')
+        await message.channel.send(embed=otomotoAPI.embedOffer(searches[0].last_offer[0]))
+
     if message.content.lower().startswith('$search'):
         user_id = message.author
         channel_id = message.channel.id
