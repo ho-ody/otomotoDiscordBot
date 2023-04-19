@@ -7,6 +7,7 @@ import re
 
 from Offer import Offer
 
+
 # last_offer = None
 
 def test():
@@ -50,10 +51,12 @@ def extractOffersFromResponse(response: str):
         if i == 0:  # different formatting in first one
             start_of_description = response.rfind('\">', end_of_name, response.find('</p>', end_of_name)) + 2
         else:
+            while response.find('@media',end_of_name) < response.find('\">', end_of_name):
+                end_of_name = response.find('\">',end_of_name) + 2
             start_of_description = response.find('\">', end_of_name) + 2
         end_of_description = response.find('<', start_of_description)
         description = response[start_of_description:end_of_description]
-        if description != "": # different formatting when no description
+        if description != "":   # different formatting when no description
             end_of_description = response.find('\">', end_of_description) + 2
         # year
         if i == 0:  # different formatting in first one
@@ -84,7 +87,7 @@ def extractOffersFromResponse(response: str):
         fuel = response[start_of_fuel:end_of_fuel]
         # city
         end_of_city = response.find("<!", end_of_fuel)
-        start_of_city = response.rfind('>', end_of_fuel, end_of_city)
+        start_of_city = response.rfind('>', end_of_fuel, end_of_city) + 1
         city = response[start_of_city:end_of_city]
         # province
         start_of_province = response.find('(<!-- -->', end_of_city) + 9
@@ -109,7 +112,7 @@ def extractOffersFromResponse(response: str):
     #    print(o.info())
     return offers
 
-def findNewOffers(offers, last_offer):
+def findNewOffers(offers, last_offer, printNewOffers, searchTarget):
     """
     :type offers: Offer[]
     """
@@ -126,11 +129,14 @@ def findNewOffers(offers, last_offer):
     else:
         last_offer[0] = None
 
-    for o in new_offers:
-        print(o.info())
+    if printNewOffers:
+        for o in new_offers:
+            print(o.info())
+            sendMessage(searchTarget,o)
     return len(new_offers)
 
 def checkIfDateShouldBeCount(date: str):
+    return True
     date = date[len('Opublikowano '):]
     if not date.find('minut') != -1:
         return False
@@ -152,3 +158,7 @@ def embedOffer(offer: Offer):
     embed.add_field(name='', value='', inline=True)
     embed.add_field(name='link', value=offer.link, inline=False)
     return embed
+
+async def sendMessage(searchTarget, offer: Offer):
+    channel = searchTarget.channel_id
+    await channel.send(f'{searchTarget.user_id.mention}', embed=embedOffer(offer))

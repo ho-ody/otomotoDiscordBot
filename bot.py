@@ -1,4 +1,5 @@
 # bot.py
+import random
 from datetime import datetime
 import os
 import time
@@ -27,11 +28,44 @@ async def on_ready():
     )
     test.start()
 
-@tasks.loop(seconds=20)
+@tasks.loop(minutes=10)
 async def test():
     start_time = time.time()
     channel = client.get_channel(CHANNEL_ID)
-    await channel.send(datetime.now().strftime(" @: %H:%M.%S"))
+    # await channel.send(datetime.now().strftime(" @: %H:%M.%S"))
+    messages = [
+        "Sprawdzam, czy kwantowa mechanika jeszcze działa...",
+        "Czekam na przyjście źródeł światła...",
+        "Wysyłam małe roboty do wykonania zadania...",
+        "Odczytuję wibracje kosmiczne...",
+        "Karmię hibernujące niedźwiedzie polarne...",
+        "Pobieram ciekawostki o pingwinach...",
+        "Nastawiam antenę na wysłanie sygnału...",
+        "Wybieram idealne kolorowe schematy...",
+        "Sprawdzam, czy moje kubki smakowe jeszcze działają...",
+        "Rozwiązuję skomplikowane łamigłówki...",
+        "Trenuję mojego wirtualnego psa...",
+        "Wyrabiam sobie kawę na podgrzewaczu kwantowym...",
+        "Czekam na odpowiedź od kota Schrödingera...",
+        "Analizuję najnowsze trendy w modzie kosmicznej...",
+        "Ustawiam ziemię na właściwej orbicie...",
+        "Liczę pi do nieskończoności...",
+        "Sortuję książki według koloru okładki...",
+        "Miksuje kolorowe farby, aby uzyskać idealny odcień...",
+        "Koduję w pythonie, żeby zmylić skynet...",
+        "Przeglądam memy, żeby się zrelaksować...",
+        "Testuję działanie programu w symulacji wszechświata...",
+        "Słucham muzyki z innej galaktyki...",
+        "Szukam lekarstwa na skomplikowane choroby wirtualnych istot...",
+        "Wdrażam funkcjonalności, które nikomu nie będą potrzebne...",
+        "Przepisuję kod z jednego języka na inny, bo tak lubię...",
+        "Aktualizuję kalendarz na następne tysiąclecie...",
+        "Testuję, czy program działa, gdy wszystko jest naopak...",
+        "Zastanawiam się, co by było, gdyby świat był płaski...",
+        "Programuję w HTML-u, bo tak mi się podoba...",
+        "Otwieram i zamykam okno, żeby zobaczyć, czy klawiatura działa..."
+    ]
+    await channel.send(f'{random.choice(messages)}')
     new_offers_count = 0
     for s in searches:
         new_offers_count += s.checkForNewOffers()
@@ -50,7 +84,7 @@ async def on_message(message):
         #s1 = time.time()
         #otomotoAPI.test()
         #await message.channel.send(f'...done [took: {time.time()-s1:.2f}s]')
-        await message.channel.send(embed=otomotoAPI.embedOffer(searches[0].last_offer[0]))
+        await message.channel.send(f'{message.author.mention}',embed=otomotoAPI.embedOffer(searches[0].last_offer[0]))
 
     if message.content.lower().startswith('$search'):
         user_id = message.author
