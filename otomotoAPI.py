@@ -133,8 +133,8 @@ def checkIfDateShouldBeCount(date: str):
     date = date[len('Opublikowano '):]
     if not date.find('minut') != -1:
         return False
-
-    print("test:\"" + date + "\"")
+    minutes = date[:date.find(' ')]
+    minutes = int(minutes)
+    if minutes > 20:
+        return False
     return True
-
-
