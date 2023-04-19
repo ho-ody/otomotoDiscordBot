@@ -3,3 +3,4 @@
 venv
 /response.txt
 /__pycache__/*.pyc
+/discordBot.zip

@@ -17,7 +17,6 @@ client = discord.Client(intents=discord.Intents.all())
 
 OPTION_TRASHTALK = True
 OPTION_REFRESH_RATE = 10
-OPTION_REFRESH_IGNORE = 20
 
 searches = []
 
@@ -26,7 +25,7 @@ async def on_ready():
     print(f'{client.user} is now online\n')
     test.start()
 
-@tasks.loop(minutes=10)
+@tasks.loop(minutes=OPTION_REFRESH_RATE)
 async def test():
     start_time = time.time()
     messages = [
@@ -85,13 +84,13 @@ async def on_message(message):
         value = message.content.lower()[len('$$refresh rate'):].strip()
         if value != '' and value.isnumeric():
             OPTION_REFRESH_RATE = int(value)
+        test.change_interval(minutes=OPTION_REFRESH_RATE)
         await message.channel.send(f'_refresh rate is now **{OPTION_REFRESH_RATE}**_')
     if message.content.lower().startswith('$$refresh ignore'):
-        global OPTION_REFRESH_IGNORE
         value = message.content.lower()[len('$$refresh ignore'):].strip()
         if value != '' and value.isnumeric():
-            OPTION_REFRESH_IGNORE = int(value)
-        await message.channel.send(f'_refresh ignore is now **{OPTION_REFRESH_IGNORE}**_')
+            otomotoAPI.set_option_refresh_ignore(int(value))
+        await message.channel.send(f'_refresh ignore is now **{otomotoAPI.get_option_refresh_ignore()}**_')
     if message.content.lower().startswith('$search'):
         user_id = message.author
         channel_id = client.get_channel(message.channel.id)
