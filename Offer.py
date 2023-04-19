@@ -13,5 +13,11 @@ class Offer:
         self.photo = photo
         self.price = price
 
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if self.link == other.link:
+            return True
+        return False
+
     def info(self):
         return f'[{self.date}] {self.name} --> {self.price} {self.mileage} ({self.link}): {self.description}, [{self.year},{self.capacity},{self.fuel}] //{self.city} ({self.province})// ({self.photo})'
