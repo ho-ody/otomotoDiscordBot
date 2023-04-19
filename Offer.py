@@ -1,5 +1,5 @@
 class Offer:
-    def __init__(self, link, name, description, year, mileage, capacity, fuel, city, province, photo, price):
+    def __init__(self, link, name, description, year, mileage, capacity, fuel, city, province, date, photo, price):
         self.link = link
         self.name = name
         self.description = description
@@ -9,8 +9,9 @@ class Offer:
         self.fuel = fuel
         self.city = city
         self.province = province
+        self.date = date
         self.photo = photo
         self.price = price
 
     def info(self):
-        return f'${self.name} {self.price} {self.mileage} (${self.link}): {self.description}, [{self.year},{self.capacity},{self.fuel}] //{self.city} ({self.province})// ({self.photo})'
+        return f'[{self.date}] {self.name} --> {self.price} {self.mileage} ({self.link}): {self.description}, [{self.year},{self.capacity},{self.fuel}] //{self.city} ({self.province})// ({self.photo})'

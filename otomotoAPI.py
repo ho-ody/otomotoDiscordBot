@@ -9,9 +9,10 @@ from Offer import Offer
 
 def test():
     testurl1 = 'https://www.otomoto.pl/osobowe/audi/a3/rzeszow?search%5Bfilter_enum_fuel_type%5D=diesel&search%5Bdist%5D=200&search%5Bfilter_float_mileage%3Ato%5D=200000&search%5Bfilter_float_price%3Afrom%5D=15000&search%5Bfilter_float_price%3Ato%5D=20000&search%5Border%5D=created_at_first%3Adesc&search%5Badvanced_search_expanded%5D=true'
-
+    testurl2 = 'https://www.otomoto.pl/osobowe/audi/a3?search%5Border%5D=created_at_first%3Adesc&search%5Badvanced_search_expanded%5D=true'
     # This will yield only the HTML code
     url = testurl1
+    url = testurl2
     response = requests.get(url)
     response_raw = html.unescape(response.text);
     #print(response.text)
@@ -38,7 +39,7 @@ def extractOffersFromResponse(response: str):
         name = response[start_of_name:end_of_name]
         # description
         if i == 0:  # different formatting in first one
-            start_of_description = response.rfind('\">', end_of_name, response.find('</p>', end_of_name)) + 1
+            start_of_description = response.rfind('\">', end_of_name, response.find('</p>', end_of_name)) + 2
         else:
             start_of_description = response.find('\">', end_of_name) + 2
         end_of_description = response.find('<', start_of_description)
@@ -70,16 +71,20 @@ def extractOffersFromResponse(response: str):
         start_of_province = response.find('(<!-- -->', end_of_city) + 9
         end_of_province = response.find('<', start_of_province)
         province = response[start_of_province:end_of_province]
+        # publication date
+        start_of_date = response.find('\">',end_of_province) + 2
+        end_of_date = end_of_province = response.find('<', start_of_date)
+        date = response[start_of_date:end_of_date]
         # photo link
         start_of_photo = response.find('https:',end_of_province)
         end_of_photo = response.find('/image',start_of_photo) + 6
         photo = response[start_of_photo:end_of_photo]
         # price
         end_of_price = response.find("PLN", end_of_fuel) + 3
-        start_of_price = response.rfind('>', end_of_photo, end_of_price)
+        start_of_price = response.rfind('>', end_of_photo, end_of_price) + 1
         price = response[start_of_price:end_of_price]
         # add to list
-        offers.append(Offer(link, name, description, year, mileage, capacity, fuel, city, province, photo, price))
+        offers.append(Offer(link, name, description, year, mileage, capacity, fuel, city, province, date, photo, price))
 
     for o in offers:
         print(o.info())
