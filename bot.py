@@ -51,7 +51,8 @@ async def on_message(message):
         channel_id = message.channel.id
         search_url = message.content[len('$search'):].strip()
         searches.append(SearchTarget(search_url, channel_id, user_id, datetime.now()))
-        await message.channel.send(f'ok {user_id.mention} i added search for your url (<{search_url}>)')
+        await message.reply(f'ok i added search for your url, i\'ll keep you updated')
+        # await message.channel.send(f'ok {user_id.mention} i added search for your url (<{search_url}>)')
         await message.edit(suppress=True)   # remove users embedded content
 
     if message.content.lower().startswith('$cancel'):
