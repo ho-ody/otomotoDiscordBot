@@ -43,5 +43,11 @@ async def on_message(message):
         s1 = time.time()
         otomotoAPI.test()
         await message.channel.send(f'...done [took: {time.time()-s1:.2f}s]')
+    if message.content.lower().startswith('$search'):
+        user_id = message.author
+        channel_id = message.channel.id
+        search_url = message.content[len('$search'):].strip()
+        bots_message = await message.channel.send(f'ok {user_id.mention} i added search for your url (<{search_url}>)')
+        await message.edit(suppress=True)   # remove users embedded content
 
 client.run(TOKEN)
