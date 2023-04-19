@@ -28,7 +28,7 @@ def extractOffersFromResponse(response: str):
     start = [match.start() for match in re.finditer(starts_with, response)]
     # make offer list
     offers = []
-    for r in start:
+    for i, r in enumerate(start):
         # link
         end_of_link = response.find('\"',r+9)
         link = response[r+9:end_of_link]
@@ -37,11 +37,17 @@ def extractOffersFromResponse(response: str):
         end_of_name = response.find('<',start_of_name)
         name = response[start_of_name:end_of_name]
         # description
-        start_of_description = response.find('\">',end_of_name) + 2
+        if i == 0:  # different formatting in first one
+            start_of_description = response.rfind('\">', end_of_name, response.find('</p>', end_of_name)) + 1
+        else:
+            start_of_description = response.find('\">', end_of_name) + 2
         end_of_description = response.find('<', start_of_description)
         description = response[start_of_description:end_of_description]
         # year
-        start_of_year = response.find('\">',response.find('\">',end_of_description) + 2) + 2
+        if i == 0:  # different formatting in first one
+            start_of_year = response.find('\">',response.find('\">',response.find('ul class',response.find('ul class',end_of_description)+2)) + 2) + 2
+        else:
+            start_of_year = response.find('\">',response.find('\">',end_of_description) + 2) + 2
         end_of_year = response.find('<', start_of_year)
         year = response[start_of_year:end_of_year]
         # mileage
@@ -73,7 +79,7 @@ def extractOffersFromResponse(response: str):
         start_of_price = response.rfind('>', end_of_photo, end_of_price)
         price = response[start_of_price:end_of_price]
         # add to list
-        offers.append(Offer(link, name, description, year, capacity, fuel, city, province, photo, price))
+        offers.append(Offer(link, name, description, year, mileage, capacity, fuel, city, province, photo, price))
 
     for o in offers:
         print(o.info())
