@@ -23,15 +23,14 @@ async def test():
     response = requests.get(url)
     response_raw = html.unescape(response.text);
     # print(response.text)
-    with open("response.txt", "wb") as file:
-        file.write(response.content)
-
+    # with open("response.txt", "wb") as file:
+    #   file.write(response.content)
     s1 = time.time()
     offers = extractOffersFromResponse(response_raw)
-    print(f' @ extractOffersFromResponse took: {time.time() - s1:.3f}s')
+    print(f' @ <>extractOffersFromResponse took: {time.time() - s1:.3f}s', end='')
     s2 = time.time()
     await findNewOffers(offers)
-    print(f' @ findNewOffers took: {time.time() - s2:.3f}s')
+    print(f'  <>findNewOffers took: {time.time() - s2:.3f}s')
 
 def extractOffersFromResponse(response: str):
     starts_with = '<a href="https://www.otomoto.pl/oferta/'
@@ -131,7 +130,7 @@ async def findNewOffers(offers, last_offer, printNewOffers, searchTarget):
 
     if printNewOffers:
         for o in new_offers:
-            print(o.info())
+            # print(o.info())
             await sendMessage(searchTarget, o)
     return len(new_offers)
 

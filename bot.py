@@ -13,26 +13,22 @@ from SearchTarget import SearchTarget
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = os.getenv('DISCORD_GUILD')
-CHANNEL_ID = int(os.getenv('CHANNEL_ID'))
 client = discord.Client(intents=discord.Intents.all())
+
+OPTION_TRASHTALK = True
+OPTION_REFRESH_RATE = 10
+OPTION_REFRESH_IGNORE = 20
 
 searches = []
 
 @client.event
 async def on_ready():
-    guild = discord.utils.get(client.guilds, name=GUILD)
-    print(
-        f'{client.user} is connected to the following guild:\n'
-        f'{guild.name} (id: {guild.id})'
-    )
+    print(f'{client.user} is now online\n')
     test.start()
 
 @tasks.loop(minutes=10)
 async def test():
     start_time = time.time()
-    #channel = client.get_channel(CHANNEL_ID)
-    # await channel.send(datetime.now().strftime(" @: %H:%M.%S"))
     messages = [
         "Sprawdzam, czy kwantowa mechanika jeszcze działa...",
         "Czekam na przyjście źródeł światła...",
@@ -68,7 +64,8 @@ async def test():
     new_offers_count = 0
     for s in searches:
         new_offers_count += await s.checkForNewOffers()
-        await s.channel_id.send(f'_...{random.choice(messages)}_')
+        if OPTION_TRASHTALK:
+            await s.channel_id.send(f'_...{random.choice(messages)}_')
     print(f' @ checking for new offers took: {time.time()-start_time:.3f}s, found: {new_offers_count} new offers')
 
 @client.event
@@ -79,13 +76,22 @@ async def on_message(message):
     if message.content.lower() == '$channelid':
         response = 'channelID: \"' + str(message.channel.id) + '\"'
         await message.channel.send(response)
-    if message.content.lower() == '$test':
-        await message.channel.send('starting...')
-        #s1 = time.time()
-        #otomotoAPI.test()
-        #await message.channel.send(f'...done [took: {time.time()-s1:.2f}s]')
-        await message.channel.send(f'{message.author.mention}',embed=otomotoAPI.embedOffer(searches[0].last_offer[0]))
-
+    if message.content.lower() == '$$trashtalk':
+        global OPTION_TRASHTALK
+        OPTION_TRASHTALK = not OPTION_TRASHTALK
+        await message.channel.send(f'_trashtalk is now **{("off","on")[OPTION_TRASHTALK]}**_')
+    if message.content.lower().startswith('$$refresh rate'):
+        global OPTION_REFRESH_RATE
+        value = message.content.lower()[len('$$refresh rate'):].strip()
+        if value != '' and value.isnumeric():
+            OPTION_REFRESH_RATE = int(value)
+        await message.channel.send(f'_refresh rate is now **{OPTION_REFRESH_RATE}**_')
+    if message.content.lower().startswith('$$refresh ignore'):
+        global OPTION_REFRESH_IGNORE
+        value = message.content.lower()[len('$$refresh ignore'):].strip()
+        if value != '' and value.isnumeric():
+            OPTION_REFRESH_IGNORE = int(value)
+        await message.channel.send(f'_refresh ignore is now **{OPTION_REFRESH_IGNORE}**_')
     if message.content.lower().startswith('$search'):
         user_id = message.author
         channel_id = client.get_channel(message.channel.id)
@@ -108,6 +114,7 @@ async def on_message(message):
         else:
             index = int(index)
             embed = discord.Embed(title="successfully canceled search", description=f'\n({index}) added {searches[index].add_date.strftime("%d.%m.%Y %H:%M:%S")} by {searches[index].user_id.mention}: \n<{searches[index].search_url}>', color=0xa30000)
+            print(f' @ {message.author} canceled search:  {searches[index].search_url}')
             del searches[index]
             await message.channel.send(embed=embed)
 
