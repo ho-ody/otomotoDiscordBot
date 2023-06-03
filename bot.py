@@ -118,3 +118,11 @@ async def on_message(message):
             await message.channel.send(embed=embed)
 
 client.run(TOKEN)
+
+# TODO:
+#   <add> command for checking if bot is online/working with auto delete messages after while
+#   <add> info if bot dies for some reason
+#   <add> offers count in bot status
+#   <change> change `$$refresh ignore` and `$$refresh rate` responses to be actual responses no plain text
+#   <add> `$$help` command
+#   <idea> rebrand `botmoto` to `botomoto` lol

@@ -37,7 +37,7 @@ async def test():
     print(f'  <>findNewOffers took: {time.time() - s2:.3f}s')
 
 def extractOffersFromResponse(response: str):
-    starts_with = '<a href="https://www.otomoto.pl/oferta/'
+    starts_with = '<a href="https://www.otomoto.pl/osobowe/oferta/'
     # find all text occurrences
     start = [match.start() for match in re.finditer(starts_with, response)]
     # make offer list
@@ -122,9 +122,9 @@ async def findNewOffers(offers, last_offer, printNewOffers, searchTarget):
     new_offers = []
     for o in offers:
         if last_offer[0] and o == last_offer[0]:
-            break
+            continue
         if not checkIfDateShouldBeCount(o.date):
-            break
+            continue
         new_offers.append(o)
 
     if len(offers):
