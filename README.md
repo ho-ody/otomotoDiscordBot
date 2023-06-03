@@ -20,6 +20,7 @@ DISCORD_TOKEN=`YOUR_TOKEN_HERE`
 ```
 - edit `discloud.config` if needed
 - pack all files to `.zip` archive, requiered files below
+
 ![files](demo/files.png)
 - open discloudbot.com, login with discord or github account
 - create new app, send `.zip` archive and run
